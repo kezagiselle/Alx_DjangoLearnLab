@@ -1,3 +1,3 @@
 ### Retrieve
->>> Book.objects.all()
+>>> Book.objects.get()
 # Output: [<Book: 1984 by George Orwell (1949)>]
