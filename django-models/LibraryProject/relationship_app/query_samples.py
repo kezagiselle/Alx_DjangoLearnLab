@@ -19,12 +19,10 @@ def query_books_by_author(author_name):
     Returns:
         QuerySet: All books by the specified author
     """
-    # Method 1: Using filter with author__name
-    books = Book.objects.filter(author__name=author_name)
-    
-    # Method 2: Using related_name (if author instance is available)
-    # author = Author.objects.get(name=author_name)
-    # books = author.books.all()
+    # Get the author object first
+    author = Author.objects.get(name=author_name)
+    # Query all books by the author using filter(author=author)
+    books = Book.objects.filter(author=author)
     
     return books
 
