@@ -56,7 +56,8 @@ def retrieve_librarian_for_library(library_name):
         Librarian: The librarian associated with the library
     """
     library = Library.objects.get(name=library_name)
-    librarian = library.librarian
+    # Retrieve the librarian using Librarian.objects.get(library=library)
+    librarian = Librarian.objects.get(library=library)
     
     return librarian
 
