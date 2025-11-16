@@ -97,3 +97,33 @@ class BookSearchForm(forms.Form):
                 raise forms.ValidationError("Search query is too long.")
         return query
 
+
+class ExampleForm(forms.Form):
+    """
+    Example form demonstrating secure form practices.
+    This form shows how to properly handle user input with validation.
+    """
+    example_field = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter example text...'
+        }),
+        label='Example Field',
+        help_text='This is an example field with proper validation.'
+    )
+    
+    def clean_example_field(self):
+        """
+        Additional validation for the example field.
+        Django automatically escapes HTML to prevent XSS attacks.
+        """
+        example_field = self.cleaned_data.get('example_field')
+        if example_field:
+            # Strip whitespace and validate
+            example_field = example_field.strip()
+            if len(example_field) < 3:
+                raise forms.ValidationError("Field must be at least 3 characters long.")
+        return example_field
+
