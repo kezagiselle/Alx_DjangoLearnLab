@@ -187,3 +187,10 @@ SECURE_SSL_REDIRECT = False  # Set to True in production
 # SECURE_HSTS_SECONDS = 31536000  # 1 year
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SECURE_HSTS_PRELOAD = True
+
+# SECURE_PROXY_SSL_HEADER: Required when Django is behind a proxy/load balancer
+# that handles SSL termination. The proxy sets HTTP_X_FORWARDED_PROTO header.
+# Only enable this if you're behind a trusted proxy!
+# Format: ('HTTP_HEADER_NAME', 'header_value')
+# Example: SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
