@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.views.generic.detail import DetailView
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
-from .models import Book, Library, UserProfile
+from .models import Book, Library, UserProfile, Author
 
 
 # Function-based view to list all books
@@ -130,3 +130,58 @@ def member_view(request):
     View accessible only to users with the Member role.
     """
     return render(request, 'relationship_app/member_view.html')
+
+
+# Book CRUD views with permission checks
+@permission_required('relationship_app.can_add_book', login_url='relationship_app:login')
+def add_book(request):
+    """
+    View to add a new book. Requires can_add_book permission.
+    """
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author_id = request.POST.get('author')
+        
+        if title and author_id:
+            author = get_object_or_404(Author, id=author_id)
+            Book.objects.create(title=title, author=author)
+            return redirect('relationship_app:list_books')
+    
+    authors = Author.objects.all()
+    return render(request, 'relationship_app/add_book.html', {'authors': authors})
+
+
+@permission_required('relationship_app.can_change_book', login_url='relationship_app:login')
+def edit_book(request, book_id):
+    """
+    View to edit an existing book. Requires can_change_book permission.
+    """
+    book = get_object_or_404(Book, id=book_id)
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author_id = request.POST.get('author')
+        
+        if title and author_id:
+            author = get_object_or_404(Author, id=author_id)
+            book.title = title
+            book.author = author
+            book.save()
+            return redirect('relationship_app:list_books')
+    
+    authors = Author.objects.all()
+    return render(request, 'relationship_app/edit_book.html', {'book': book, 'authors': authors})
+
+
+@permission_required('relationship_app.can_delete_book', login_url='relationship_app:login')
+def delete_book(request, book_id):
+    """
+    View to delete a book. Requires can_delete_book permission.
+    """
+    book = get_object_or_404(Book, id=book_id)
+    
+    if request.method == 'POST':
+        book.delete()
+        return redirect('relationship_app:list_books')
+    
+    return render(request, 'relationship_app/delete_book.html', {'book': book})
