@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Q
 from django.utils.html import escape
 from .models import Book
-from .forms import BookForm, BookSearchForm
+from .forms import BookForm, BookSearchForm, ExampleForm
 
 
 @permission_required('bookshelf.can_view', raise_exception=True)
