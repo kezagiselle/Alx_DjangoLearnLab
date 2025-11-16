@@ -23,8 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-0q5opah=z*teyd#5v)d-5*j3x8=8c4=*vl)0g_n!6jrxw2h**b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Set DEBUG to False in production for security
+# In development, set to True for debugging
 DEBUG = True
 
+# In production, set ALLOWED_HOSTS to your domain(s)
+# Example: ALLOWED_HOSTS = ['example.com', 'www.example.com']
 ALLOWED_HOSTS = []
 
 
@@ -49,6 +53,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Custom Content Security Policy middleware
+    # Adds CSP headers to prevent XSS attacks
+    'bookshelf.middleware.ContentSecurityPolicyMiddleware',
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -129,3 +136,54 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ============================================================================
+# SECURITY SETTINGS
+# ============================================================================
+# These settings enhance the security of your Django application
+# IMPORTANT: Some settings should only be enabled in production (when DEBUG=False)
+
+# Browser Security Headers
+# SECURE_BROWSER_XSS_FILTER: Enables browser's XSS filtering
+# This helps protect against cross-site scripting (XSS) attacks
+SECURE_BROWSER_XSS_FILTER = True
+
+# X_FRAME_OPTIONS: Prevents clickjacking attacks by controlling iframe embedding
+# Options: 'DENY', 'SAMEORIGIN', or 'ALLOW-FROM'
+X_FRAME_OPTIONS = 'DENY'
+
+# SECURE_CONTENT_TYPE_NOSNIFF: Prevents MIME type sniffing
+# This prevents browsers from trying to guess content types, reducing XSS risks
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Cookie Security Settings
+# These should be set to True in production when using HTTPS
+# CSRF_COOKIE_SECURE: Ensures CSRF cookies are only sent over HTTPS
+# Set to True in production, False in development (unless using HTTPS locally)
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+# SESSION_COOKIE_SECURE: Ensures session cookies are only sent over HTTPS
+# Set to True in production, False in development (unless using HTTPS locally)
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+# Additional Security Settings
+# CSRF_COOKIE_HTTPONLY: Prevents JavaScript access to CSRF cookie
+CSRF_COOKIE_HTTPONLY = True
+
+# SESSION_COOKIE_HTTPONLY: Prevents JavaScript access to session cookie
+SESSION_COOKIE_HTTPONLY = True
+
+# SESSION_COOKIE_SAMESITE: Controls when cookies are sent with cross-site requests
+# Options: 'Strict', 'Lax', or 'None'
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# SECURE_SSL_REDIRECT: Redirects all HTTP requests to HTTPS (production only)
+# Set to True in production, False in development
+SECURE_SSL_REDIRECT = False  # Set to True in production
+
+# SECURE_HSTS_SECONDS: HTTP Strict Transport Security (HSTS) duration
+# Only enable in production with HTTPS
+# SECURE_HSTS_SECONDS = 31536000  # 1 year
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True

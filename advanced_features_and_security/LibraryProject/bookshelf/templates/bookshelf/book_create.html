@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Book</title>
+</head>
+<body>
+    <h1>Create New Book</h1>
+    
+    <!-- CSRF Token is automatically included in Django forms -->
+    <!-- This protects against Cross-Site Request Forgery (CSRF) attacks -->
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+        <div class="errors">
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <div>
+            <label for="{{ form.title.id_for_label }}">Title:</label>
+            {{ form.title }}
+            {% if form.title.help_text %}
+                <small>{{ form.title.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.author.id_for_label }}">Author:</label>
+            {{ form.author }}
+            {% if form.author.help_text %}
+                <small>{{ form.author.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <div>
+            <label for="{{ form.publication_year.id_for_label }}">Publication Year:</label>
+            {{ form.publication_year }}
+            {% if form.publication_year.help_text %}
+                <small>{{ form.publication_year.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <button type="submit">Create Book</button>
+    </form>
+    
+    <a href="{% url 'bookshelf:list_books' %}">Back to List</a>
+</body>
+</html>
+

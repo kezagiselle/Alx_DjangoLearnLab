@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Example</title>
+</head>
+<body>
+    <h1>Secure Form Example</h1>
+    
+    <!-- 
+    SECURITY NOTE: All forms must include {% csrf_token %}
+    This Django template tag generates a CSRF token that:
+    1. Protects against Cross-Site Request Forgery (CSRF) attacks
+    2. Is automatically validated by Django's CSRF middleware
+    3. Must be included in all POST forms
+    -->
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Django automatically escapes all template variables to prevent XSS -->
+        <!-- User input is safely rendered without executing malicious scripts -->
+        
+        <div>
+            <label for="example_field">Example Field:</label>
+            <input type="text" name="example_field" id="example_field" required>
+        </div>
+        
+        <button type="submit">Submit</button>
+    </form>
+    
+    <!-- 
+    SECURITY BEST PRACTICES:
+    1. Always use {% csrf_token %} in forms
+    2. Use Django forms for validation (prevents SQL injection)
+    3. Never use |safe filter with user input
+    4. Use Django's auto-escaping (enabled by default)
+    -->
+</body>
+</html>
+
