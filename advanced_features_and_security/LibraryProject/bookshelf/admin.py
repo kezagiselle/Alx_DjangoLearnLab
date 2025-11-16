@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 from .models import CustomUser, Book
 
 
-@admin.register(CustomUser)
 class CustomUserAdmin(BaseUserAdmin):
     """
     Custom admin interface for CustomUser model.
@@ -30,6 +29,10 @@ class CustomUserAdmin(BaseUserAdmin):
     
     search_fields = ('email', 'username', 'first_name', 'last_name')
     ordering = ('email',)
+
+
+# Register CustomUser with CustomUserAdmin
+admin.site.register(CustomUser, CustomUserAdmin)
 
 
 class BookAdmin(admin.ModelAdmin):
