@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member View</title>
+</head>
+<body>
+    <h1>Member Dashboard</h1>
+    <p>Welcome, {{ user.username }}! You are viewing the Member page.</p>
+    <p>This page is only accessible to users with the Member role.</p>
+    <ul>
+        <li>Browse available books</li>
+        <li>Check out books</li>
+        <li>View your borrowing history</li>
+        <li>Manage your account</li>
+    </ul>
+    <a href="{% url 'relationship_app:logout' %}">Logout</a>
+</body>
+</html>
+

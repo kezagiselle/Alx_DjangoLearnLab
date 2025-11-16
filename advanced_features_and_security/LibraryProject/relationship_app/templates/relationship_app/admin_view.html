@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin View</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, {{ user.username }}! You are viewing the Admin page.</p>
+    <p>This page is only accessible to users with the Admin role.</p>
+    <ul>
+        <li>Manage all users and their roles</li>
+        <li>Access all system settings</li>
+        <li>View all library data and statistics</li>
+        <li>Perform administrative tasks</li>
+    </ul>
+    <a href="{% url 'relationship_app:logout' %}">Logout</a>
+</body>
+</html>
+
