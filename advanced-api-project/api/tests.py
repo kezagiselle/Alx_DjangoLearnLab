@@ -80,3 +80,40 @@ class BookAPITests(TestCase):
         url = f'/api/books/delete/{self.book.id}/'
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_filter_books_by_title(self):
+        url = '/api/books/?title=Test Book'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], "Test Book")
+
+    def test_filter_books_by_author(self):
+        url = f'/api/books/?author={self.author.id}'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], "Test Book")
+
+    def test_filter_books_by_publication_year(self):
+        url = '/api/books/?publication_year=2023'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], "Test Book")
+
+    def test_search_books(self):
+        url = '/api/books/?search=Test'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], "Test Book")
+
+    def test_order_books(self):
+        Book.objects.create(title="A New Book", publication_year=2022, author=self.author)
+        url = '/api/books/?ordering=title'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0]['title'], "A New Book")
+        self.assertEqual(response.data[1]['title'], "Test Book")
