@@ -1,11 +1,11 @@
-from django.test import TestCase
+from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
 from rest_framework import status
 from .models import Book, Author
 from django.contrib.auth.models import User
 from datetime import datetime
 
-class BookAPITests(TestCase):
+class BookAPITests(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
