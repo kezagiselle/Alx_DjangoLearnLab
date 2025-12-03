@@ -16,4 +16,31 @@
     <p class="article-content">{{ object.content }}</p>
   </div>
 </article>
+
+<h3>Comments</h3>
+{% for comment in object.comments.all %}
+<div class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <span class="mr-2">{{ comment.author }}</span>
+      <small class="text-muted">{{ comment.created_at|date:"F d, Y" }}</small>
+      {% if comment.author == user %}
+      <div>
+        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'comment-update' comment.id %}">Edit</a>
+        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'comment-delete' comment.id %}">Delete</a>
+      </div>
+      {% endif %}
+    </div>
+    <p class="article-content">{{ comment.content }}</p>
+  </div>
+</div>
+{% empty %}
+<p>No comments yet.</p>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<a class="btn btn-primary" href="{% url 'add-comment' object.id %}">Add Comment</a>
+{% else %}
+<p><a href="{% url 'login' %}">Login</a> to add a comment.</p>
+{% endif %}
 {% endblock %}

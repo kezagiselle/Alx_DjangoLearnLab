@@ -87,3 +87,41 @@ class PostTests(TestCase):
         self.client.login(username='otheruser', password='password')
         response = self.client.post(reverse('post-delete', kwargs={'pk': self.post.pk}))
         self.assertEqual(response.status_code, 403)
+
+from .models import Comment
+
+class CommentTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.other_user = User.objects.create_user(username='otheruser', password='password')
+        self.post = Post.objects.create(title='Test Post', content='Test Content', author=self.user)
+        self.comment = Comment.objects.create(post=self.post, author=self.user, content='Test Comment')
+
+    def test_comment_create_view(self):
+        self.client.login(username='testuser', password='password')
+        response = self.client.post(reverse('add-comment', kwargs={'pk': self.post.pk}), {'content': 'New Comment'})
+        self.assertRedirects(response, reverse('post-detail', kwargs={'pk': self.post.pk}))
+        self.assertEqual(Comment.objects.count(), 2)
+
+    def test_comment_update_view(self):
+        self.client.login(username='testuser', password='password')
+        response = self.client.post(reverse('comment-update', kwargs={'pk': self.comment.pk}), {'content': 'Updated Comment'})
+        self.assertRedirects(response, reverse('post-detail', kwargs={'pk': self.post.pk}))
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.content, 'Updated Comment')
+
+    def test_comment_delete_view(self):
+        self.client.login(username='testuser', password='password')
+        response = self.client.post(reverse('comment-delete', kwargs={'pk': self.comment.pk}))
+        self.assertRedirects(response, reverse('post-detail', kwargs={'pk': self.post.pk}))
+        self.assertEqual(Comment.objects.count(), 0)
+
+    def test_comment_update_view_forbidden(self):
+        self.client.login(username='otheruser', password='password')
+        response = self.client.post(reverse('comment-update', kwargs={'pk': self.comment.pk}), {'content': 'Updated Comment'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_comment_delete_view_forbidden(self):
+        self.client.login(username='otheruser', password='password')
+        response = self.client.post(reverse('comment-delete', kwargs={'pk': self.comment.pk}))
+        self.assertEqual(response.status_code, 403)
