@@ -75,7 +75,7 @@ class PostTests(TestCase):
     def test_post_delete_view(self):
         self.client.login(username='testuser', password='password')
         response = self.client.post(reverse('post-delete', kwargs={'pk': self.post.pk}))
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, '/posts/')
         self.assertEqual(Post.objects.count(), 0)
 
     def test_post_update_view_forbidden(self):
