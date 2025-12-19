@@ -66,3 +66,37 @@ class CommentAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Comment.objects.count(), 1)
         self.assertEqual(Comment.objects.get().author, self.user1)
+
+class FeedAPITests(APITestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(username='user1', password='password')
+        self.user2 = User.objects.create_user(username='user2', password='password')
+        self.user3 = User.objects.create_user(username='user3', password='password')
+        self.client.force_authenticate(user=self.user1)
+        
+        self.post_user2 = Post.objects.create(author=self.user2, title='Post 2', content='Content 2')
+        self.post_user3 = Post.objects.create(author=self.user3, title='Post 3', content='Content 3')
+        self.feed_url = reverse('post_feed')
+
+    def test_feed_only_followed_users(self):
+        # User1 follows User2
+        self.user1.following.add(self.user2)
+        
+        response = self.client.get(self.feed_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Should contain post from user2
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['id'], self.post_user2.id)
+
+    def test_feed_ordering(self):
+        self.user1.following.add(self.user2)
+        # Create another post for user2 later
+        post_user2_new = Post.objects.create(author=self.user2, title='New Post 2', content='New Content')
+        
+        response = self.client.get(self.feed_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 2)
+        # Ordering is -created_at
+        self.assertEqual(response.data['results'][0]['id'], post_user2_new.id)
+
