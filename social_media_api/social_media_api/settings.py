@@ -87,6 +87,7 @@ DATABASES = {
         default='sqlite:///' + str(BASE_DIR / 'db.sqlite3')
     )
 }
+# Ensure PORT is set in your environment if required by your database configuration
 
 
 # Password validation
